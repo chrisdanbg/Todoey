@@ -10,11 +10,20 @@ import UIKit
 
 class TableViewController: UITableViewController {
 
-    var itemsArray = ["Help Ivi", "Play some games", "Become the best programmer!"]
+    var itemsArray = [Item]()
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = false
+        
+        let newItem = Item()
+        newItem.title = "Help Ivi"
+        itemsArray.append(newItem)
+        
+//        if let items = defaults.array(forKey: "ItemsArray") as? [String] {
+//            itemsArray = items
+//        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -23,21 +32,21 @@ class TableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItem", for: indexPath)
-        cell.textLabel?.text = itemsArray[indexPath.row]
+        
+        let item = itemsArray[indexPath.row]
+        cell.textLabel?.text = item.title
+        cell.accessoryType = item.done ? .checkmark : .none
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
-        print(itemsArray[indexPath.row])
+        let item = itemsArray[indexPath.row]
+        
+        item.done = !item.done
+        
+        tableView.reloadData()
         
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
-        
         
     }
 
@@ -47,8 +56,14 @@ class TableViewController: UITableViewController {
         
         let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default ) { (action) in
-            self.itemsArray.append(textToAppend.text!)
-            print(self.itemsArray)
+            
+            let newItem = Item()
+            newItem.title = textToAppend.text!
+    
+            self.itemsArray.append(newItem)
+            print(self.itemsArray[0].title)
+            //self.defaults.set(self.itemsArray, forKey: "SavedItems")
+            
             self.tableView.reloadData()
         }
         

@@ -41,5 +41,24 @@ class TableViewController: UITableViewController {
         
     }
 
+    @IBAction func addButtonWasPressed(_ sender: Any) {
+        
+        var textToAppend = UITextField()
+        
+        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Add Item", style: .default ) { (action) in
+            self.itemsArray.append(textToAppend.text!)
+            print(self.itemsArray)
+            self.tableView.reloadData()
+        }
+        
+        alert.addAction(action)
+        alert.addTextField { (textField) in
+            textField.placeholder = "Add new item here."
+            textToAppend = textField
+        }
+        
+        present(alert, animated: true, completion: nil)
+    }
 }
 
